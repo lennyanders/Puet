@@ -14,8 +14,11 @@ function failscreen.show()
 
   gfx.drawRect(0, 0, 400, 240)
 
+  local sOrNot = '';
+  if score ~= 1 then sOrNot = 's' end
+
   gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-  gfx.drawTextAligned('*You got ' .. score .. ' points!*', 200, 80, kTextAlignment.center)
+  gfx.drawTextAligned('*You got ' .. score .. ' point' .. sOrNot .. '!*', 200, 80, kTextAlignment.center)
   gfx.drawTextAligned('*Press* Ⓐ *to start a new game*', 200, 120, kTextAlignment.center)
   gfx.setImageDrawMode(gfx.kDrawModeCopy)
 
