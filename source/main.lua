@@ -143,14 +143,11 @@ function playdate.update()
 
     if collided == true then
       failscreen.show()
-    end
-
-    if collided == false then
+    else
       block:moveBy(2, 0)
+      gfx.sprite.update()
     end
   end
-
-  gfx.sprite.update()
 
 	playdate.drawFPS()
 end
