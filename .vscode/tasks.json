@@ -11,8 +11,6 @@
       "type": "shell",
       "command": "pdc",
       "args": [
-        "-sdkpath",
-        "${env:PLAYDATE_SDK_PATH}",
         "'${workspaceFolder}\\source'",
         "'${workspaceFolder}\\builds\\${workspaceFolderBasename}.pdx'"
       ],
