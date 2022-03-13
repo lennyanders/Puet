@@ -27,13 +27,29 @@ function failscreen.show()
     scores = { score }
   else
     scores[#scores + 1] = score
-    table.sort(scores,
+
+    -- remove duplicate entries
+    local hash = {}
+    local uniqueScores = {}
+    for _, v in ipairs(scores) do
+      if not hash[v] then
+        uniqueScores[#uniqueScores + 1] = v
+        hash[v] = true
+      end
+    end
+
+    -- sort scores
+    table.sort(uniqueScores,
       function (a, b)
         return a > b
       end
     )
+
+    -- trim scores to the max count of 99
+    scores = { table.unpack(uniqueScores, 1, 99) }
   end
-  ds.write({ table.unpack(scores, 1, 99) }, 'scores')
+
+  ds.write(scores, 'scores')
 
   gamestate = "failscreen"
 end
