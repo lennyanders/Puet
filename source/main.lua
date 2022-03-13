@@ -47,6 +47,8 @@ function init()
   startscreen.show()
 end
 
+local oldCrankPosition = 0
+
 function startGame()
   gfx.sprite.removeAll()
 
@@ -71,13 +73,17 @@ function startGame()
     gfx.fillCircleAtPoint(10, 10, 10)
   gfx.popContext()
 
+  oldCrankPosition = playdate.getCrankPosition()
+
   circle1 = gfx.sprite.new(circleImage)
-  circle1:moveTo(330, 170)
+  local circle1Rad = rad(oldCrankPosition - 90)
+  circle1:moveTo(330 + (cos(circle1Rad) * 50), (120 + sin(circle1Rad) * 50))
   circle1:setCollideRect(0, 0, circle1:getSize())
   circle1:add()
 
   circle2 = gfx.sprite.new(circleImage)
-  circle2:moveTo(330, 70)
+  local circle2Rad = circle1Rad + math.pi;
+  circle2:moveTo(330 + (cos(circle2Rad) * 50), (120 + sin(circle2Rad) * 50))
   circle2:setCollideRect(0, 0, circle2:getSize())
   circle2:add()
 
@@ -93,9 +99,6 @@ function startGame()
 end
 
 init()
-
-
-local oldCrankPosition = 0
 
 function playdate.update()
   if gamestate == "startmenu" then
