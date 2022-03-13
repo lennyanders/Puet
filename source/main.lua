@@ -2,6 +2,7 @@ import 'CoreLibs/object'
 import 'CoreLibs/graphics'
 import 'CoreLibs/sprites'
 import 'CoreLibs/timer'
+import 'CoreLibs/crank'
 
 import 'startscreen'
 import 'failscreen'
@@ -104,6 +105,24 @@ function playdate.update()
   elseif gamestate == 'highscores' then
     if playdate.buttonJustPressed(playdate.kButtonB) then
       startscreen.show()
+    else
+      local crankticks = playdate.getCrankTicks(8);
+      if crankticks == 1 or playdate.buttonJustPressed(playdate.kButtonDown) then
+        highscores.listview:selectNextRow()
+      elseif crankticks == -1 or playdate.buttonJustPressed(playdate.kButtonUp) then
+        highscores.listview:selectPreviousRow()
+      elseif highscores.listview.isScrolling == false then
+        if playdate.buttonIsPressed(playdate.kButtonDown) then
+          highscores.listview:selectNextRow()
+        elseif playdate.buttonIsPressed(playdate.kButtonUp) then
+          highscores.listview:selectPreviousRow()
+        end
+      end
+    end
+
+    if highscores.listview.needsDisplay == true then
+      highscores.listview:drawInRect(20, 42, 360, 197)
+      playdate.timer:updateTimers()
     end
   elseif gamestate == 'failscreen' then
     if playdate.buttonJustPressed(playdate.kButtonA) then
