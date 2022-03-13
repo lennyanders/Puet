@@ -1,0 +1,38 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Close Running Simulation",
+      "type": "shell",
+      "command": "${workspaceFolder}\\.vscode\\closeRunningSimulation.ps1"
+    },
+    {
+      "label": "Build",
+      "type": "shell",
+      "command": "pdc",
+      "args": [
+        "-sdkpath",
+        "${env:PLAYDATE_SDK_PATH}",
+        "'${workspaceFolder}\\source'",
+        "'${workspaceFolder}\\builds\\${workspaceFolderBasename}.pdx'"
+      ],
+      "options": {
+        "cwd": "${env:PLAYDATE_SDK_PATH}"
+      }
+    },
+    {
+      "label": "Run (Simulator)",
+      "type": "shell",
+      "command": "${env:PLAYDATE_SDK_PATH}/bin/PlaydateSimulator.exe",
+      "args": ["'${workspaceFolder}/builds/${workspaceFolderBasename}.pdx'"]
+    },
+    {
+      "label": "Build and Run",
+      "dependsOn": ["Build", "Close Running Simulation", "Run (Simulator)"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}
