@@ -33,7 +33,7 @@ function failscreen.show()
       end
     )
   end
-  ds.write(scores, 'scores')
+  ds.write({ table.unpack(scores, 1, 99) }, 'scores')
 
   gamestate = "failscreen"
 end
