@@ -7,11 +7,10 @@ import 'CoreLibs/crank'
 import 'startscreen'
 import 'failscreen'
 import 'highscores'
+import 'countdown'
+import 'game'
 
 local gfx <const> = playdate.graphics
-local rad <const> = math.rad;
-local cos <const> = math.cos;
-local sin <const> = math.sin;
 
 gamestate = nil
 score = 0
@@ -19,8 +18,8 @@ score = 0
 local scoreImage = nil
 local scoreSprite = nil
 
-local circle1 = nil
-local circle2 = nil
+circle1 = nil
+circle2 = nil
 
 local block = nil
 
@@ -47,8 +46,6 @@ function init()
   startscreen.show()
 end
 
-local oldCrankPosition = 0
-
 function startGame()
   gfx.sprite.removeAll()
 
@@ -73,18 +70,12 @@ function startGame()
     gfx.fillCircleAtPoint(10, 10, 10)
   gfx.popContext()
 
-  oldCrankPosition = playdate.getCrankPosition()
-
   circle1 = gfx.sprite.new(circleImage)
-  local circle1Rad = rad(oldCrankPosition - 90)
-  circle1:moveTo(330 + (cos(circle1Rad) * 50), (120 + sin(circle1Rad) * 50))
-  circle1:setCollideRect(0, 0, circle1:getSize())
-  circle1:add()
-
   circle2 = gfx.sprite.new(circleImage)
-  local circle2Rad = circle1Rad + math.pi;
-  circle2:moveTo(330 + (cos(circle2Rad) * 50), (120 + sin(circle2Rad) * 50))
+  game.updateCircles()
+  circle1:setCollideRect(0, 0, circle1:getSize())
   circle2:setCollideRect(0, 0, circle2:getSize())
+  circle1:add()
   circle2:add()
 
   gfx.sprite.setBackgroundDrawingCallback(
@@ -133,17 +124,12 @@ function playdate.update()
     elseif playdate.buttonJustPressed(playdate.kButtonB) then
       startscreen.show()
     end
-  elseif gamestate == "running" then
-    local crankPosition = playdate.getCrankPosition()
-    if crankPosition ~= oldCrankPosition then
-      local circle1Rad = rad(crankPosition - 90)
-      circle1:moveTo(330 + (cos(circle1Rad) * 50), (120 + sin(circle1Rad) * 50))
-
-      local circle2Rad = circle1Rad + math.pi;
-      circle2:moveTo(330 + (cos(circle2Rad) * 50), (120 + sin(circle2Rad) * 50))
-
-      oldCrankPosition = crankPosition
-    end
+  elseif gamestate == 'countdown' then
+    game.updateCircles()
+    gfx.sprite.update()
+    playdate.timer:updateTimers()
+  elseif gamestate == 'running' then
+    game.updateCircles()
 
     if block.x > 400 then
       increaseScoreBy(1)
@@ -172,4 +158,16 @@ function playdate.update()
   end
 
 	playdate.drawFPS()
+end
+
+function playdate.gameWillResume()
+  if gamestate == 'running' then
+    countdown.show()
+  end
+end
+
+function playdate.deviceDidUnlock()
+  if gamestate == 'running' then
+    countdown.show()
+  end
 end
