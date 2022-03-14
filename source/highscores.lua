@@ -28,16 +28,15 @@ function highscores.show()
   listview:setNumberOfRows(#scores)
 
   function listview:drawCell(section, row, column, selected, x, y, width, height)
-    if selected then
-      gfx.setColor(gfx.kColorWhite)
-    else
+    if selected == false then
+      gfx.setColor(gfx.kColorBlack)
       gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
     end
 
     gfx.fillRect(x, y, width, height)
     gfx.drawText(string.format("%02d", row) .. '. *' .. scores[row] .. '*', x + 8, y + 4)
 
-    gfx.setColor(gfx.kColorBlack)
+    gfx.setColor(gfx.kColorWhite)
     gfx.setImageDrawMode(gfx.kDrawModeCopy)
   end
 
