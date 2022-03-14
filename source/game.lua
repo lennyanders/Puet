@@ -55,6 +55,7 @@ function game.show()
     gfx.fillCircleAtPoint(10, 10, 10)
   gfx.popContext()
 
+  oldCrankPosition = nil
   circle1 = gfx.sprite.new(circleImage)
   circle2 = gfx.sprite.new(circleImage)
   game.updateCircles()
@@ -90,28 +91,24 @@ end
 function game.update()
   game.updateCircles()
 
+  local collided = false;
   if block.x > 400 then
     increaseScoreBy(1)
     block:moveTo(-20, 70)
-  end
-
-  local circleCollisiontest = circle1;
-  local collisions = circleCollisiontest:overlappingSprites()
-  if #collisions < 1 then
-    circleCollisiontest = circle2
-    collisions = circleCollisiontest:overlappingSprites()
-  end
-  local collided = false;
-  if #collisions > 0 then
-    if circleCollisiontest:alphaCollision(collisions[1]) then
-      collided = true
+  else
+    local x, y, collisions, length = block:checkCollisions(block.x + 5, 70)
+    if length > 0 then
+      if collisions[1].sprite:alphaCollision(collisions[1].other) then
+        collided = true
+      end
     end
   end
 
-  if collided == true then
-    failscreen.show()
-  else
-    block:moveBy(2, 0)
+  if collided == false then
+    block:moveTo(block.x + 5, 70)
     gfx.sprite.update()
+
+  else
+    failscreen.show()
   end
 end
