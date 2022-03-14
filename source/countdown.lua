@@ -34,3 +34,9 @@ function countdown.show()
 
   gamestate = 'countdown'
 end
+
+function countdown.update()
+  game.updateCircles()
+  gfx.sprite.update()
+  playdate.timer:updateTimers()
+end

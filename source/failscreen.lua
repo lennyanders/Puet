@@ -53,3 +53,11 @@ function failscreen.show()
 
   gamestate = "failscreen"
 end
+
+function failscreen.update()
+  if playdate.buttonJustPressed(playdate.kButtonA) then
+    game.show()
+  elseif playdate.buttonJustPressed(playdate.kButtonB) then
+    startscreen.show()
+  end
+end

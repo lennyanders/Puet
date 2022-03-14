@@ -19,3 +19,9 @@ function startscreen.show()
 
   gamestate = "startmenu"
 end
+
+function startscreen.update()
+  if playdate.buttonJustPressed(playdate.kButtonA) then
+    game.show()
+  end
+end
