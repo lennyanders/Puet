@@ -4,6 +4,7 @@ import 'CoreLibs/sprites'
 import 'CoreLibs/animator'
 
 local gfx <const> = playdate.graphics
+local geo <const> = playdate.geometry;
 
 local rad <const> = math.rad
 local cos <const> = math.cos
@@ -52,7 +53,7 @@ function game.show()
   block:moveTo(-width, 70)
   block:add()
 
-  local blockAnimator = playdate.graphics.animator.new(3000, playdate.geometry.point.new(-width / 2, 70), playdate.geometry.point.new(400 + width / 2, 70))
+  local blockAnimator = gfx.animator.new(3000, geo.point.new(-width / 2, 70), geo.point.new(400 + width / 2, 70))
 
   blocks = { { sprite = block, blockAnimator = blockAnimator } }
 
