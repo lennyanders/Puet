@@ -4,6 +4,7 @@ import 'CoreLibs/sprites'
 import 'CoreLibs/timer'
 
 local gfx <const> = playdate.graphics
+local Timer <const> = playdate.timer;
 
 countdown = {}
 
@@ -13,12 +14,21 @@ function countdown.show()
   countSprite:moveTo(200, 120)
   countSprite:add()
 
+  for i = 1, #blocks do
+    blocks[i].timer:pause()
+  end
+
   local count = 3;
-  playdate.timer.keyRepeatTimerWithDelay(1000, 1000,
+  Timer.keyRepeatTimerWithDelay(1000, 1000,
     function (timer)
       if count == 0 then
         timer:remove()
         countSprite:remove()
+
+        for i = 1, #blocks do
+          blocks[i].timer:start()
+        end
+
         gamestate = 'running'
       else
         gfx.pushContext(countImage)

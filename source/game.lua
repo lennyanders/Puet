@@ -1,10 +1,10 @@
 import 'CoreLibs/object'
 import 'CoreLibs/graphics'
 import 'CoreLibs/sprites'
-import 'CoreLibs/animator'
+import 'CoreLibs/timer'
 
 local gfx <const> = playdate.graphics
-local geo <const> = playdate.geometry;
+local Timer <const> = playdate.timer;
 
 local rad <const> = math.rad
 local cos <const> = math.cos
@@ -18,7 +18,7 @@ local scoreSprite = nil
 local circle1 = nil
 local circle2 = nil
 
-local blocks = nil
+blocks = nil
 
 local oldCrankPosition = nil
 
@@ -53,9 +53,9 @@ function game.show()
   block:moveTo(-width, 70)
   block:add()
 
-  local blockAnimator = gfx.animator.new(3000, geo.point.new(-width / 2, 70), geo.point.new(400 + width / 2, 70))
+  local timer = Timer.new(3000, -width / 2, 400 + width / 2)
 
-  blocks = { { sprite = block, blockAnimator = blockAnimator } }
+  blocks = { { sprite = block, timer = timer, y = 70 } }
 
   local circleImage = gfx.image.new(20, 20)
   gfx.pushContext(circleImage)
@@ -101,14 +101,14 @@ function game.update()
   local collided = false;
   for i = 1, #blocks do
     local block = blocks[i]
-    print(block.blockAnimator)
-    if block.blockAnimator:ended() == true then
+    if block.timer.timeLeft == 0 then
       block.sprite:remove()
+      block.timer:remove()
       table.remove(blocks, i)
       increaseScoreBy(1)
     else
-      local nextPos = block.blockAnimator:currentValue()
-      local x, y, collisions, length = block.sprite:checkCollisions(nextPos)
+      local nextPos = block.timer.value
+      local x, y, collisions, length = block.sprite:checkCollisions(nextPos, block.y)
       if length > 0 then
         if collisions[1].sprite:alphaCollision(collisions[1].other) then
           collided = true
@@ -117,11 +117,12 @@ function game.update()
         end
       end
 
-      block.sprite:moveTo(nextPos)
+      block.sprite:moveTo(nextPos, block.y)
     end
   end
 
   if collided == false then
     gfx.sprite.update()
+    playdate.timer.updateTimers()
   end
 end
