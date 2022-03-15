@@ -1,6 +1,7 @@
 import 'CoreLibs/object'
 import 'CoreLibs/graphics'
 import 'CoreLibs/sprites'
+import 'CoreLibs/animator'
 
 local gfx <const> = playdate.graphics
 
@@ -16,7 +17,8 @@ local scoreSprite = nil
 local circle1 = nil
 local circle2 = nil
 
-local block = nil
+local blocks = nil
+
 local oldCrankPosition = nil
 
 function updateScoreImage()
@@ -49,6 +51,10 @@ function game.show()
   block:setCollideRect(0, 0, width, height)
   block:moveTo(-width, 70)
   block:add()
+
+  local blockAnimator = playdate.graphics.animator.new(3000, playdate.geometry.point.new(-width / 2, 70), playdate.geometry.point.new(400 + width / 2, 70))
+
+  blocks = { { sprite = block, blockAnimator = blockAnimator } }
 
   local circleImage = gfx.image.new(20, 20)
   gfx.pushContext(circleImage)
@@ -92,23 +98,29 @@ function game.update()
   game.updateCircles()
 
   local collided = false;
-  if block.x > 400 then
-    increaseScoreBy(1)
-    block:moveTo(-20, 70)
-  else
-    local x, y, collisions, length = block:checkCollisions(block.x + 5, 70)
-    if length > 0 then
-      if collisions[1].sprite:alphaCollision(collisions[1].other) then
-        collided = true
+  for i = 1, #blocks do
+    local block = blocks[i]
+    print(block.blockAnimator)
+    if block.blockAnimator:ended() == true then
+      block.sprite:remove()
+      table.remove(blocks, i)
+      increaseScoreBy(1)
+    else
+      local nextPos = block.blockAnimator:currentValue()
+      local x, y, collisions, length = block.sprite:checkCollisions(nextPos)
+      if length > 0 then
+        if collisions[1].sprite:alphaCollision(collisions[1].other) then
+          collided = true
+          failscreen.show()
+          break
+        end
       end
+
+      block.sprite:moveTo(nextPos)
     end
   end
 
   if collided == false then
-    block:moveTo(block.x + 5, 70)
     gfx.sprite.update()
-
-  else
-    failscreen.show()
   end
 end
