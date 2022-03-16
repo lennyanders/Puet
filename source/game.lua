@@ -57,6 +57,12 @@ function game.show()
 
   blocks = { { sprite = block, timer = timer, y = 70 } }
 
+  local block2 = block:copy()
+  local timer2 = Timer.new(3000, -width / 2, 400 + width / 2)
+  timer2.delay = 1500
+
+  blocks[#blocks + 1] = { sprite = block2, timer = timer2, y = 70 }
+
   local circleImage = gfx.image.new(20, 20)
   gfx.pushContext(circleImage)
     gfx.fillCircleAtPoint(10, 10, 10)
@@ -98,27 +104,35 @@ end
 function game.update()
   game.updateCircles()
 
-  local collided = false;
+  local collided = false
+  local removeBlock = nil
   for i = 1, #blocks do
     local block = blocks[i]
     if block.timer.timeLeft == 0 then
       block.sprite:remove()
       block.timer:remove()
-      table.remove(blocks, i)
       increaseScoreBy(1)
+      removeBlock = i
     else
       local nextPos = block.timer.value
-      local x, y, collisions, length = block.sprite:checkCollisions(nextPos, block.y)
-      if length > 0 then
-        if collisions[1].sprite:alphaCollision(collisions[1].other) then
-          collided = true
-          failscreen.show()
-          break
+      if i == 1 then
+        local x, y, collisions, length = block.sprite:checkCollisions(nextPos, block.y)
+        if length > 0 then
+          local collision = collisions[1];
+          if (collision.other == circle1 or collision.other == circle2) and collision.sprite:alphaCollision(collision.other) then
+            collided = true
+            failscreen.show()
+            break
+          end
         end
       end
 
       block.sprite:moveTo(nextPos, block.y)
     end
+  end
+
+  if removeBlock ~= nil then
+    table.remove(blocks, removeBlock)
   end
 
   if collided == false then
