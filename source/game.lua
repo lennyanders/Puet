@@ -22,6 +22,20 @@ blocks = nil
 
 local oldCrankPosition = nil
 
+function addBlock()
+  local blockImage = gfx.image.new(20, 100, gfx.kColorWhite)
+  block = gfx.sprite.new(blockImage)
+  block:setRotation(45)
+  local width, height = block:getSize()
+  block:setCollideRect(0, 0, width, height)
+  block:moveTo(-width, 70)
+  block:add()
+
+  local timer = Timer.new(3000, -width / 2, 400 + width / 2)
+
+  blocks[#blocks + 1] = { sprite = block, timer = timer, y = 70 }
+end
+
 function updateScoreImage()
   gfx.pushContext(scoreImage)
     gfx.clear(gfx.kColorWhite)
@@ -133,6 +147,7 @@ function game.update()
 
   if removeBlock ~= nil then
     table.remove(blocks, removeBlock)
+    addBlock()
   end
 
   if collided == false then
