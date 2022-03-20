@@ -7,7 +7,7 @@ import 'CoreLibs/easing'
 import 'utils'
 
 local gfx <const> = playdate.graphics
-local Timer <const> = playdate.timer;
+local Timer <const> = playdate.timer
 
 local rad <const> = math.rad
 local cos <const> = math.cos
@@ -82,7 +82,7 @@ function game.show()
 
   score = 0
 
-  scoreImage = gfx.image.new(100, 25);
+  scoreImage = gfx.image.new(100, 25)
   updateScoreImage()
   scoreSprite = gfx.sprite.new(scoreImage)
   scoreSprite:moveTo(350, 12.5)
@@ -147,7 +147,7 @@ function game.update()
       if i == 1 then
         local x, y, collisions, length = block.sprite:checkCollisions(nextPos, block.y)
         if length > 0 then
-          local collision = collisions[1];
+          local collision = collisions[1]
           if (collision.other == circle1 or collision.other == circle2) and collision.sprite:alphaCollision(collision.other) then
             collided = true
             game.addTimer:remove()

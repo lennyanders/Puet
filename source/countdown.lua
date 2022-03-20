@@ -6,7 +6,7 @@ import 'CoreLibs/timer'
 import 'game'
 
 local gfx <const> = playdate.graphics
-local Timer <const> = playdate.timer;
+local Timer <const> = playdate.timer
 
 countdown = {}
 
@@ -21,7 +21,7 @@ function countdown.show()
     game.blocks[i].timer:pause()
   end
 
-  local count = 3;
+  local count = 3
   Timer.keyRepeatTimerWithDelay(1000, 1000,
     function (timer)
       if count == 0 then

@@ -14,7 +14,7 @@ function failscreen.show()
 
   gfx.drawRect(0, 0, 400, 240)
 
-  local sOrNot = '';
+  local sOrNot = ''
   if score ~= 1 then sOrNot = 's' end
 
   gfx.setImageDrawMode(gfx.kDrawModeFillWhite)

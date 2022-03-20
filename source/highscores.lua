@@ -9,7 +9,7 @@ local ds <const> = playdate.datastore
 
 highscores = {}
 
-local listview = nil;
+local listview = nil
 
 function highscores.show()
   gfx.clear()
@@ -49,7 +49,7 @@ function highscores.update()
   if playdate.buttonJustPressed(playdate.kButtonB) then
     startscreen.show()
   else
-    local crankticks = playdate.getCrankTicks(8);
+    local crankticks = playdate.getCrankTicks(8)
     if crankticks == 1 or playdate.buttonJustPressed(playdate.kButtonDown) then
       listview:selectNextRow()
     elseif crankticks == -1 or playdate.buttonJustPressed(playdate.kButtonUp) then
