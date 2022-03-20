@@ -30,7 +30,7 @@ game.addTimer = nil
 local randY = uniqueRandom(-2, 2)
 local randR = uniqueRandom(0, 7)
 local randH = uniqueRandom(0, 20)
-function addBlock()
+local function addBlock()
   local y = 120 + 35 * randY()
 
   local imageHeight = nil
@@ -57,22 +57,22 @@ function addBlock()
     speedScore = score
   end
 
-  local duration = playdate.easingFunctions.outQuad(speedScore, 5000, -4000, maxSpeedScore)
-  local timer = Timer.new(duration, -200, 600)
+  local duration = playdate.easingFunctions.outQuad(speedScore, 4500, -3500, maxSpeedScore)
+  local timer = Timer.new(duration, -100, 500)
 
   game.blocks[#game.blocks + 1] = { sprite = block, timer = timer, y = y, endX = 400 + width / 2 }
 
-  game.addTimer = Timer.new(duration / 3.5, addBlock)
+  game.addTimer = Timer.new(duration / 3, addBlock)
 end
 
-function updateScoreImage()
+local function updateScoreImage()
   gfx.pushContext(scoreImage)
     gfx.clear(gfx.kColorWhite)
     gfx.drawTextAligned('*Score: ' .. score .. '*', 50, 4, kTextAlignment.center)
   gfx.popContext()
 end
 
-function increaseScoreBy(number)
+local function increaseScoreBy(number)
   score += number
   updateScoreImage()
 end
