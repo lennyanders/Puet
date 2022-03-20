@@ -19,11 +19,13 @@ local scoreSprite = nil
 local circle1 = nil
 local circle2 = nil
 
+local addTimer = nil
+
 blocks = nil
 
 local oldCrankPosition = nil
 
-function addBlock(delay)
+function addBlock()
   local y = 120 + 35 * math.random(-2, 2)
 
   local imageHeight = nil
@@ -38,9 +40,8 @@ function addBlock(delay)
   block = gfx.sprite.new(image)
   block:setRotation(rotationBase * 22.5)
   local width, height = block:getSize()
-  local halfWidth = width / 2
   block:setCollideRect(0, 0, width, height)
-  block:moveTo(-halfWidth, y)
+  block:moveTo(-200, y)
   block:add()
 
   local maxSpeedScore = 250
@@ -51,12 +52,12 @@ function addBlock(delay)
     speedScore = score
   end
 
-  local timer = Timer.new(playdate.easingFunctions.outQuad(speedScore, 4000, -3000, maxSpeedScore), -halfWidth, 400 + halfWidth)
-  if delay ~= nil then
-    timer.delay = delay
-  end
+  local duration = playdate.easingFunctions.outQuad(speedScore, 5000, -4000, maxSpeedScore)
+  local timer = Timer.new(duration, -200, 600)
 
-  blocks[#blocks + 1] = { sprite = block, timer = timer, y = y }
+  blocks[#blocks + 1] = { sprite = block, timer = timer, y = y, endX = 400 + width / 2 }
+
+  addTimer = Timer.new(duration / 3.5, addBlock)
 end
 
 function updateScoreImage()
@@ -85,7 +86,6 @@ function game.show()
 
   blocks = { }
   addBlock()
-  addBlock(2000)
 
   local circleImage = gfx.image.new(20, 20)
   gfx.pushContext(circleImage)
@@ -132,7 +132,7 @@ function game.update()
   local removeBlock = nil
   for i = 1, #blocks do
     local block = blocks[i]
-    if block.timer.timeLeft == 0 then
+    if block.timer.value >= block.endX then
       block.sprite:remove()
       block.timer:remove()
       increaseScoreBy(1)
@@ -145,6 +145,7 @@ function game.update()
           local collision = collisions[1];
           if (collision.other == circle1 or collision.other == circle2) and collision.sprite:alphaCollision(collision.other) then
             collided = true
+            addTimer:remove()
             failscreen.show()
             break
           end
@@ -157,7 +158,6 @@ function game.update()
 
   if removeBlock ~= nil then
     table.remove(blocks, removeBlock)
-    addBlock()
   end
 
   if collided == false then
