@@ -11,17 +11,35 @@ import 'countdown'
 import 'game'
 
 local gfx <const> = playdate.graphics
+local ds <const> = playdate.datastore
 
 gamestate = nil
 score = 0
 
+local fpsMap = { ["30"] = 30, ["50"] = 50, ["Unlimited"] = 0 }
+
+function setFps(option)
+  playdate.display.setRefreshRate(fpsMap[option])
+end
+
+function setAndSaveFps(option)
+  setFps(option)
+  ds.write(option, 'fps')
+end
+
 function init()
-  playdate.display.setRefreshRate(0)
+  local fps = ds.read('fps')
+  if fps == nil then
+    fps = "50"
+  end
+  setFps(fps)
+
   gfx.setColor(gfx.kColorWhite)
   gfx.setBackgroundColor(gfx.kColorBlack)
 
   local menu = playdate.getSystemMenu()
   menu:addMenuItem("Highscores", highscores.show)
+  menu:addOptionsMenuItem("FPS", { "30", "50", "Unlimited" }, fps, setAndSaveFps)
 
   startscreen.show()
 end
