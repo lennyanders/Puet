@@ -65,15 +65,16 @@ local function addBlock()
   game.addTimer = Timer.new(duration / 3, addBlock)
 end
 
+local scoreFont = gfx.font.new("fonts/Full Circle/font-full-circle")
 local function updateScoreImage()
-  local text = '*Score: ' .. score .. '*'
-  local width = gfx.getTextSizeForMaxWidth(text, 400)
+  local text = 'Score: ' .. score
+  local width = scoreFont:getTextWidth(text, 400)
 
   gfx.pushContext(scoreImage)
     gfx.setBackgroundColor(gfx.kColorWhite)
-    gfx.fillRect(188 - width, 0, width + 12, 25)
+    gfx.fillRect(188 - width, 0, width + 12, 20)
     gfx.setBackgroundColor(gfx.kColorBlack)
-    gfx.drawText(text, 194 - width, 4)
+    scoreFont:drawText(text, 194 - width, 3)
   gfx.popContext()
 end
 
@@ -87,10 +88,10 @@ function game.show()
 
   score = 0
 
-  scoreImage = gfx.image.new(200, 25)
+  scoreImage = gfx.image.new(200, 20)
   updateScoreImage()
   scoreSprite = gfx.sprite.new(scoreImage)
-  scoreSprite:moveTo(300, 12.5)
+  scoreSprite:moveTo(300, 10)
   scoreSprite:setZIndex(1)
   scoreSprite:add()
 
