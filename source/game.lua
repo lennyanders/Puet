@@ -4,6 +4,8 @@ import 'CoreLibs/sprites'
 import 'CoreLibs/timer'
 import 'CoreLibs/easing'
 
+import 'utils'
+
 local gfx <const> = playdate.graphics
 local Timer <const> = playdate.timer;
 
@@ -25,15 +27,18 @@ blocks = nil
 
 local oldCrankPosition = nil
 
+local randY = uniqueRandom(-2, 2)
+local randR = uniqueRandom(0, 7)
+local randH = uniqueRandom(0, 20)
 function addBlock()
-  local y = 120 + 35 * math.random(-2, 2)
+  local y = 120 + 35 * randY()
 
   local imageHeight = nil
-  local rotationBase = math.random(0, 7)
+  local rotationBase = randR()
   if y == 120 and (rotationBase <= 2 or rotationBase >= 6) then
     imageHeight = 70
   else
-    imageHeight = 80 + math.random(0, 20)
+    imageHeight = 80 + randH()
   end
 
   local image = gfx.image.new(20, imageHeight, gfx.kColorWhite)
