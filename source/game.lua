@@ -66,9 +66,14 @@ local function addBlock()
 end
 
 local function updateScoreImage()
+  local text = '*Score: ' .. score .. '*'
+  local width = gfx.getTextSizeForMaxWidth(text, 400)
+
   gfx.pushContext(scoreImage)
-    gfx.clear(gfx.kColorWhite)
-    gfx.drawTextAligned('*Score: ' .. score .. '*', 50, 4, kTextAlignment.center)
+    gfx.setBackgroundColor(gfx.kColorWhite)
+    gfx.fillRect(188 - width, 0, width + 12, 25)
+    gfx.setBackgroundColor(gfx.kColorBlack)
+    gfx.drawText(text, 194 - width, 4)
   gfx.popContext()
 end
 
@@ -82,10 +87,10 @@ function game.show()
 
   score = 0
 
-  scoreImage = gfx.image.new(100, 25)
+  scoreImage = gfx.image.new(200, 25)
   updateScoreImage()
   scoreSprite = gfx.sprite.new(scoreImage)
-  scoreSprite:moveTo(350, 12.5)
+  scoreSprite:moveTo(300, 12.5)
   scoreSprite:setZIndex(1)
   scoreSprite:add()
 
