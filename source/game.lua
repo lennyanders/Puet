@@ -2,6 +2,7 @@ import 'CoreLibs/object'
 import 'CoreLibs/graphics'
 import 'CoreLibs/sprites'
 import 'CoreLibs/timer'
+import 'CoreLibs/easing'
 
 local gfx <const> = playdate.graphics
 local Timer <const> = playdate.timer;
@@ -23,20 +24,39 @@ blocks = nil
 local oldCrankPosition = nil
 
 function addBlock(delay)
-  local blockImage = gfx.image.new(20, 100, gfx.kColorWhite)
-  block = gfx.sprite.new(blockImage)
-  block:setRotation(45)
+  local y = 120 + 35 * math.random(-2, 2)
+
+  local imageHeight = nil
+  local rotationBase = math.random(0, 7)
+  if y == 120 and (rotationBase <= 2 or rotationBase >= 6) then
+    imageHeight = 70
+  else
+    imageHeight = 80 + math.random(0, 20)
+  end
+
+  local image = gfx.image.new(20, imageHeight, gfx.kColorWhite)
+  block = gfx.sprite.new(image)
+  block:setRotation(rotationBase * 22.5)
   local width, height = block:getSize()
+  local halfWidth = width / 2
   block:setCollideRect(0, 0, width, height)
-  block:moveTo(-width, 70)
+  block:moveTo(-halfWidth, y)
   block:add()
 
-  local timer = Timer.new(3000, -width / 2, 400 + width / 2)
+  local maxSpeedScore = 250
+  local speedScore = nil
+  if score > maxSpeedScore then
+    speedScore = maxSpeedScore
+  else
+    speedScore = score
+  end
+
+  local timer = Timer.new(playdate.easingFunctions.outQuad(speedScore, 4000, -3000, maxSpeedScore), -halfWidth, 400 + halfWidth)
   if delay ~= nil then
     timer.delay = delay
   end
 
-  blocks[#blocks + 1] = { sprite = block, timer = timer, y = 70 }
+  blocks[#blocks + 1] = { sprite = block, timer = timer, y = y }
 end
 
 function updateScoreImage()
@@ -60,11 +80,12 @@ function game.show()
   updateScoreImage()
   scoreSprite = gfx.sprite.new(scoreImage)
   scoreSprite:moveTo(350, 12.5)
+  scoreSprite:setZIndex(1)
   scoreSprite:add()
 
   blocks = { }
   addBlock()
-  addBlock(1500)
+  addBlock(2000)
 
   local circleImage = gfx.image.new(20, 20)
   gfx.pushContext(circleImage)
