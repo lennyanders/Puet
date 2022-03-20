@@ -22,7 +22,7 @@ blocks = nil
 
 local oldCrankPosition = nil
 
-function addBlock()
+function addBlock(delay)
   local blockImage = gfx.image.new(20, 100, gfx.kColorWhite)
   block = gfx.sprite.new(blockImage)
   block:setRotation(45)
@@ -32,6 +32,9 @@ function addBlock()
   block:add()
 
   local timer = Timer.new(3000, -width / 2, 400 + width / 2)
+  if delay ~= nil then
+    timer.delay = delay
+  end
 
   blocks[#blocks + 1] = { sprite = block, timer = timer, y = 70 }
 end
@@ -59,23 +62,9 @@ function game.show()
   scoreSprite:moveTo(350, 12.5)
   scoreSprite:add()
 
-  local blockImage = gfx.image.new(20, 100, gfx.kColorWhite)
-  block = gfx.sprite.new(blockImage)
-  block:setRotation(45)
-  local width, height = block:getSize()
-  block:setCollideRect(0, 0, width, height)
-  block:moveTo(-width, 70)
-  block:add()
-
-  local timer = Timer.new(3000, -width / 2, 400 + width / 2)
-
-  blocks = { { sprite = block, timer = timer, y = 70 } }
-
-  local block2 = block:copy()
-  local timer2 = Timer.new(3000, -width / 2, 400 + width / 2)
-  timer2.delay = 1500
-
-  blocks[#blocks + 1] = { sprite = block2, timer = timer2, y = 70 }
+  blocks = { }
+  addBlock()
+  addBlock(1500)
 
   local circleImage = gfx.image.new(20, 20)
   gfx.pushContext(circleImage)

@@ -16,7 +16,7 @@ gamestate = nil
 score = 0
 
 function init()
-  playdate.display.setRefreshRate(50)
+  playdate.display.setRefreshRate(0)
   gfx.setColor(gfx.kColorWhite)
   gfx.setBackgroundColor(gfx.kColorBlack)
 
