@@ -60,7 +60,7 @@ local function addBlock()
   local duration = playdate.easingFunctions.outQuad(speedScore, 4500, -3500, maxSpeedScore)
   local timer = Timer.new(duration, -100, 500)
 
-  game.blocks[#game.blocks + 1] = { sprite = block, timer = timer, y = y, endX = 400 + width / 2 }
+  game.blocks[#game.blocks + 1] = { sprite = block, timer = timer, y = y, endX = 400 + width / 2, passed = false }
 
   game.addTimer = Timer.new(duration / 3, addBlock)
 end
@@ -143,14 +143,19 @@ function game.update()
   local removeBlock = nil
   for i = 1, #game.blocks do
     local block = game.blocks[i]
-    if block.timer.value >= block.endX then
-      block.sprite:remove()
-      block.timer:remove()
-      increaseScoreBy(1)
-      removeBlock = i
-    else
-      local nextPos = block.timer.value
-      if i == 1 then
+    local nextPos = block.timer.value
+    if i == 1 then
+      if nextPos >= block.endX - 10 then
+        if block.passed == false then
+          increaseScoreBy(1)
+          block.passed = true
+        end
+        if nextPos >= block.endX then
+          block.sprite:remove()
+          block.timer:remove()
+          removeBlock = i
+        end
+      else
         local x, y, collisions, length = block.sprite:checkCollisions(nextPos, block.y)
         if length > 0 then
           local collision = collisions[1]
@@ -162,9 +167,9 @@ function game.update()
           end
         end
       end
-
-      block.sprite:moveTo(nextPos, block.y)
     end
+
+    block.sprite:moveTo(nextPos, block.y)
   end
 
   if removeBlock ~= nil then
