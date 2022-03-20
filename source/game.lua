@@ -21,11 +21,11 @@ local scoreSprite = nil
 local circle1 = nil
 local circle2 = nil
 
-local addTimer = nil
-
-blocks = nil
-
 local oldCrankPosition = nil
+
+game.blocks = nil
+game.addTimer = nil
+
 
 local randY = uniqueRandom(-2, 2)
 local randR = uniqueRandom(0, 7)
@@ -60,9 +60,9 @@ function addBlock()
   local duration = playdate.easingFunctions.outQuad(speedScore, 5000, -4000, maxSpeedScore)
   local timer = Timer.new(duration, -200, 600)
 
-  blocks[#blocks + 1] = { sprite = block, timer = timer, y = y, endX = 400 + width / 2 }
+  game.blocks[#game.blocks + 1] = { sprite = block, timer = timer, y = y, endX = 400 + width / 2 }
 
-  addTimer = Timer.new(duration / 3.5, addBlock)
+  game.addTimer = Timer.new(duration / 3.5, addBlock)
 end
 
 function updateScoreImage()
@@ -89,7 +89,7 @@ function game.show()
   scoreSprite:setZIndex(1)
   scoreSprite:add()
 
-  blocks = { }
+  game.blocks = { }
   addBlock()
 
   local circleImage = gfx.image.new(20, 20)
@@ -135,8 +135,8 @@ function game.update()
 
   local collided = false
   local removeBlock = nil
-  for i = 1, #blocks do
-    local block = blocks[i]
+  for i = 1, #game.blocks do
+    local block = game.blocks[i]
     if block.timer.value >= block.endX then
       block.sprite:remove()
       block.timer:remove()
@@ -150,7 +150,7 @@ function game.update()
           local collision = collisions[1];
           if (collision.other == circle1 or collision.other == circle2) and collision.sprite:alphaCollision(collision.other) then
             collided = true
-            addTimer:remove()
+            game.addTimer:remove()
             failscreen.show()
             break
           end
@@ -162,7 +162,7 @@ function game.update()
   end
 
   if removeBlock ~= nil then
-    table.remove(blocks, removeBlock)
+    table.remove(game.blocks, removeBlock)
   end
 
   if collided == false then

@@ -3,6 +3,8 @@ import 'CoreLibs/graphics'
 import 'CoreLibs/sprites'
 import 'CoreLibs/timer'
 
+import 'game'
+
 local gfx <const> = playdate.graphics
 local Timer <const> = playdate.timer;
 
@@ -14,8 +16,9 @@ function countdown.show()
   countSprite:moveTo(200, 120)
   countSprite:add()
 
-  for i = 1, #blocks do
-    blocks[i].timer:pause()
+  game.addTimer:pause()
+  for i = 1, #game.blocks do
+    game.blocks[i].timer:pause()
   end
 
   local count = 3;
@@ -25,8 +28,9 @@ function countdown.show()
         timer:remove()
         countSprite:remove()
 
-        for i = 1, #blocks do
-          blocks[i].timer:start()
+        game.addTimer:start()
+        for i = 1, #game.blocks do
+          game.blocks[i].timer:start()
         end
 
         gamestate = 'running'
