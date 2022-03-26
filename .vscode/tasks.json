@@ -4,16 +4,29 @@
     {
       "label": "Close Running Simulation",
       "type": "shell",
-      "command": "${workspaceFolder}\\.vscode\\closeRunningSimulation.ps1"
+      "windows": {
+        "command": "${workspaceFolder}\\.vscode\\closeRunningSimulation.ps1"
+      },
+      "osx": {
+        "command": ""
+      }
     },
     {
       "label": "Build",
       "type": "shell",
       "command": "pdc",
-      "args": [
-        "'${workspaceFolder}\\source'",
-        "'${workspaceFolder}\\builds\\${workspaceFolderBasename}.pdx'"
-      ],
+      "windows": {
+        "args": [
+          "'${workspaceFolder}\\source'",
+          "'${workspaceFolder}\\builds\\${workspaceFolderBasename}.pdx'"
+        ]
+      },
+      "osx": {
+        "args": [
+          "'${workspaceFolder}/source'",
+          "'${workspaceFolder}/builds/${workspaceFolderBasename}.pdx'"
+        ]
+      },
       "options": {
         "cwd": "${env:PLAYDATE_SDK_PATH}"
       }
@@ -21,8 +34,14 @@
     {
       "label": "Run (Simulator)",
       "type": "shell",
-      "command": "${env:PLAYDATE_SDK_PATH}/bin/PlaydateSimulator.exe",
-      "args": ["'${workspaceFolder}/builds/${workspaceFolderBasename}.pdx'"]
+      "windows": {
+        "args": ["'${workspaceFolder}/builds/${workspaceFolderBasename}.pdx'"],
+        "command": "${env:PLAYDATE_SDK_PATH}/bin/PlaydateSimulator.exe"
+      },
+      "osx": {
+        "args": ["'${workspaceFolder}/builds/${workspaceFolderBasename}.pdx'"],
+        "command": "open"
+      }
     },
     {
       "label": "Build and Run",
